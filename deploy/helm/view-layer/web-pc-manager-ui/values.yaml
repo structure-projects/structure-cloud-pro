@@ -22,11 +22,7 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-env:
-  scheme: "http"
-  server_host: "admin-api.yueyankeji.com"
-  server_port: 80
-  organization_id: 100
+
 podAnnotations: {}
 
 podSecurityContext: {}
@@ -56,9 +52,9 @@ ingress:
         - path: /
           pathType: Prefix
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+#    - secretName: admin.yueyankeji.com-tls
+#      hosts:
+#        - admin.yueyankeji.com
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

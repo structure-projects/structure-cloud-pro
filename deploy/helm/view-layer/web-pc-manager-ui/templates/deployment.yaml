@@ -33,19 +33,15 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: SCHEME
-              value: {{ .Values.env.scheme }}
-            - name: SERVER_HOST
-              value: {{ .Values.env.server_host }}
-            - name: SERVER_PORT
-              value: {{ .Values.env.server_port }}
-            - name: ORGANIZATION_ID
-              value: {{ .Values.env.organization_id }}
+          args: ["-c /usr/local/nginx/nginx.conf"]
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /usr/local/nginx/nginx.conf
+              subPath: nginx.conf
           livenessProbe:
             httpGet:
               path: /
@@ -68,3 +64,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ include "web-pc-manager-ui.fullname" . }}
