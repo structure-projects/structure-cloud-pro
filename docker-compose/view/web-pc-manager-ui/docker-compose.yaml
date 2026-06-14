@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   structure-admin-ui:
-    image: registry.cn-hangzhou.aliyuncs.com/structured/structured-admin-ui:1.0.1
+    image: registry.cn-hangzhou.aliyuncs.com/structured/structured-admin-ui:latest
     restart: always
     hostname: manager-ui #服务内不使用host进行通信一定要配置
     deploy: # 这个是编排配置默认节点配置为1 通常这个在配置在docker swarm 环境下使用
@@ -11,10 +11,13 @@ services:
       placement:
         constraints:
           - node.role == worker
-    networks: # 服务一定在要同一个网络下运行这样hostname才会正常生效
+    networks:
       - structure-cloud-work
-    #容器名称
     container_name: manager-ui
+    environment:
+        - "SERVER_HOST=admin-center"
+        - "SERVER_PORT=8080"
+        - "SCHEME=http"
     ports:       # 映射端口
       - "17000:80"
 networks:
