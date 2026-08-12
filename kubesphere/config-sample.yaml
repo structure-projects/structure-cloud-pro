@@ -5,17 +5,17 @@ metadata:
   name: sample
 spec:
   hosts:
-  - {name: master1, address: 192.168.0.152, internalAddress: 192.168.0.152, user: root, password: "Lcq7339502"}
-  - {name: node1, address: 192.168.0.153, internalAddress: 192.168.0.153, user: root, password: "Lcq7339502"}
-  - {name: node2, address: 192.168.0.154, internalAddress: 192.168.0.154, user: root, password: "Lcq7339502"}
+    - {name: k8s-master, address: 192.168.10.2, internalAddress: 192.168.10.2, user: root, privateKeyPath: "/root/.ssh/k8s.pem"}
+    - {name: k8s-node1, address: 192.168.10.3, internalAddress: 192.168.10.3, user: root, privateKeyPath: "/root/.ssh/k8s.pem"}
+    - {name: k8s-node2, address: 192.168.10.4, internalAddress: 192.168.10.4, user: root, privateKeyPath: "/root/.ssh/k8s.pem"}
   roleGroups:
     etcd:
-    - master1
-    control-plane: 
-    - master1
+      - k8s-master
+    control-plane:
+      - k8s-master
     worker:
-    - node1
-    - node2
+      - k8s-node1
+      - k8s-node2
   controlPlaneEndpoint:
     ## Internal loadbalancer for apiservers 
     # internalLoadbalancer: haproxy
