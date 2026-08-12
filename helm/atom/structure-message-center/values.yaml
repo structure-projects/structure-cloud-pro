@@ -1,0 +1,55 @@
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+backend:
+  enabled: true
+  name: message-service
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/structured/message-service
+    pullPolicy: Always
+    tag: "2.0.0"
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    APP_PATH: /app/boot/app.jar
+    JAVA_OPTS: "-Xms256m -Xmx1024m"
+    PARAMS: "-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro"
+  replicaCount: 1
+  resources: {}
+
+frontend:
+  enabled: true
+  name: message-ui
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/structured/message-ui
+    pullPolicy: Always
+    tag: "2.0.0"
+  service:
+    type: ClusterIP
+    port: 80
+  env:
+    SCHEME: https
+    SERVER_HOST: api.prod.structured.cn
+    SERVER_PORT: "443"
+  replicaCount: 1
+  resources: {}
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+podAnnotations: {}
+ingress:
+  enabled: false
+  className: ""
+  hosts: []
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+nodeSelector: {}
+tolerations: []
+affinity: {}

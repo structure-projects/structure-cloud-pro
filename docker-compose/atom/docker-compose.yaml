@@ -1,32 +1,903 @@
 version: "3.8"
 services:
   gateway:
-    image: registry.cn-hangzhou.aliyuncs.com/structured/structured-gateway:latest
+    image: registry.cn-hangzhou.aliyuncs.com/structured/structured-gateway:2.0.0
     restart: always
-    hostname: gateway #服务内不使用host进行通信一定要配置
+    hostname: gateway
     ports:
       - "18000:8080"
     env_file:
       - ../.env
-    deploy: # 这个是编排配置默认节点配置为1 通常这个在配置在docker swarm 环境下使用
+    deploy:
       restart_policy:
         condition: on-failure
       replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-    networks: # 服务一定在要同一个网络下运行这样hostname才会正常生效
+    networks:
       - structure-cloud-work
     environment:
       - APP_PATH=/app/boot/app.jar
       - JAVA_OPTS=-Xms256m -Xmx1024m
       - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
-    healthcheck: #健康检查的探针，这里使用spring-boot的健康检查并没有对端口进行探测
+    healthcheck:
       test: [ "CMD","/bin/sh","/app/liveness.sh" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  # ==================== IAM 后端服务 ====================
+  admin-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/admin-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: admin-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  app-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/app-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: app-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  audit-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/audit-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: audit-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  auth-manager:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/auth-manager:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: auth-manager
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  auth-server:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/auth-server:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: auth-server
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  billing-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/billing-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: billing-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  data-middle-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/data-middle-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: data-middle-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  file-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/file-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: file-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  message-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/message-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: message-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  org-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/org-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: org-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  portal-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/portal-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: portal-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  resource-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/resource-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: resource-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  resource-sync-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/resource-sync-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: resource-sync-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  risk-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/risk-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: risk-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  structure-sso:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/structure-sso:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: structure-sso
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  tenant-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/tenant-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: tenant-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  user-service:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/user-service:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: user-service
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - APP_PATH=/app/boot/app.jar
+      - JAVA_OPTS=-Xms256m -Xmx1024m
+      - PARAMS=-Dfile.encoding=UTF-8 -Dspring.profiles.active=pro -Djava.security.egd=file:/dev/./urandom -Duser.timezone=Asia/Shanghai
+    healthcheck:
+      test: ["CMD","/bin/sh","/app/liveness.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "nacos-0.nacos:nacos"
+      - "nacos-1.nacos:nacos"
+      - "nacos-2.nacos:nacos"
+
+  # ==================== IAM 前端服务 ====================
+  admin-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/admin-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: admin-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  app-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/app-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: app-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  audit-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/audit-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: audit-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  billing-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/billing-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: billing-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  data-middle-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/data-middle-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: data-middle-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  file-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/file-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: file-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  message-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/message-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: message-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  oauth-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/oauth-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: oauth-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  org-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/org-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: org-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  portal-console:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/portal-console:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: portal-console
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  portal-miniapp-h5:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/portal-miniapp-h5:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: portal-miniapp-h5
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  portal-shell:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/portal-shell:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: portal-shell
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  portal-ssr:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/portal-ssr:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: portal-ssr
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  resource-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/resource-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: resource-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  risk-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/risk-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: risk-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  tenant-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/tenant-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: tenant-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  user-ui:
+    image: registry.cn-hangzhou.aliyuncs.com/structured/user-ui:2.0.0
+    restart: always
+    pull_policy: always
+    hostname: user-ui
+    env_file:
+      - ../.env
+    deploy:
+      restart_policy:
+        condition: on-failure
+      replicas: 1
+    networks:
+      - structure-cloud-work
+    environment:
+      - SCHEME=https
+      - SERVER_HOST=api.prod.structured.cn
+      - SERVER_PORT=443
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 networks:
   structure-cloud-work:
     external: true

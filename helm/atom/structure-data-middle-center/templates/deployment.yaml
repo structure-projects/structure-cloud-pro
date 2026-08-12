@@ -1,0 +1,60 @@
+{{- range $key, $svc := dict "backend" .Values.backend "frontend" .Values.frontend }}
+{{- if $svc.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "structure-data-middle-center.fullname" $ }}-{{ $svc.name }}
+  labels:
+    {{- include "structure-data-middle-center.labels" $ | nindent 4 }}
+    app.service: {{ $svc.name }}
+spec:
+  {{- if not $.Values.autoscaling.enabled }}
+  replicas: {{ $svc.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "structure-data-middle-center.selectorLabels" $ | nindent 6 }}
+      app.service: {{ $svc.name }}
+  template:
+    metadata:
+      labels:
+        {{- include "structure-data-middle-center.selectorLabels" $ | nindent 8 }}
+        app.service: {{ $svc.name }}
+    spec:
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "structure-data-middle-center.serviceAccountName" $ }}
+      containers:
+        - name: {{ $svc.name }}
+          image: "{{ $svc.image.repository }}:{{ $svc.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $svc.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ $svc.service.port }}
+              protocol: TCP
+          {{- if $svc.env }}
+          env:
+            {{- range $k, $v := $svc.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

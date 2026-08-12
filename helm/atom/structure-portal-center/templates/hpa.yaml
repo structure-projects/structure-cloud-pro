@@ -1,0 +1,27 @@
+{{- if .Values.autoscaling.enabled }}
+{{- range $key, $svc := dict "frontend1" .Values.frontend1 "frontend2" .Values.frontend2 "frontend3" .Values.frontend3 "frontend4" .Values.frontend4 }}
+{{- if $svc.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "structure-portal-center.fullname" $ }}-{{ $svc.name }}
+  labels:
+    {{- include "structure-portal-center.labels" $ | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "structure-portal-center.fullname" $ }}-{{ $svc.name }}
+  minReplicas: {{ $.Values.autoscaling.minReplicas }}
+  maxReplicas: {{ $.Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $.Values.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
+{{- end }}
+{{- end }}

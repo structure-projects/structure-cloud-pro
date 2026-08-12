@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled }}
+{{- range $key, $svc := dict "backend" .Values.backend "frontend" .Values.frontend }}
+{{- if $svc.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "structure-file-center.fullname" $ }}-{{ $svc.name }}
+  labels:
+    {{- include "structure-file-center.labels" $ | nindent 4 }}
+spec:
+  {{- with $.Values.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  rules:
+    {{- range $.Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "structure-file-center.fullname" $ }}-{{ $svc.name }}
+                port:
+                  number: {{ $svc.service.port }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

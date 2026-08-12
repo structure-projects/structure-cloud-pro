@@ -1,0 +1,9 @@
+{{ .Chart.Name }} has been deployed!
+
+1. Get the application URL by running these commands:
+{{- range $key, $svc := dict "backend" .Values.backend "frontend" .Values.frontend }}
+{{- if $svc.enabled }}
+  kubectl port-forward service/{{ include "structure-risk-center.fullname" $ }}-{{ $svc.name }} {{ $svc.service.port }}:{{ $svc.service.port }}
+  http://127.0.0.1:{{ $svc.service.port }}
+{{- end }}
+{{- end }}

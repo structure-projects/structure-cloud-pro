@@ -1,0 +1,22 @@
+{{- range $key, $svc := dict "frontend1" .Values.frontend1 "frontend2" .Values.frontend2 "frontend3" .Values.frontend3 "frontend4" .Values.frontend4 }}
+{{- if $svc.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "structure-portal-center.fullname" $ }}-{{ $svc.name }}
+  labels:
+    {{- include "structure-portal-center.labels" $ | nindent 4 }}
+    app.service: {{ $svc.name }}
+spec:
+  type: {{ $svc.service.type }}
+  ports:
+    - port: {{ $svc.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "structure-portal-center.selectorLabels" $ | nindent 4 }}
+    app.service: {{ $svc.name }}
+{{- end }}
+{{- end }}
