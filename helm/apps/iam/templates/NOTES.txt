@@ -1,0 +1,15 @@
+IAM 应用已部署！
+
+1. 获取网关访问地址：
+  kubectl port-forward service/{{ include "iam.fullname" . }}-gateway 8080:8080
+  http://127.0.0.1:8080
+
+2. 查看所有 IAM 服务：
+  kubectl get deployments -l app.kubernetes.io/instance={{ .Release.Name }}
+
+3. 包含的 center 服务：
+{{- range $key, $val := .Values }}
+{{- if hasPrefix "structure-" $key }}
+  - {{ $key }}
+{{- end }}
+{{- end }}

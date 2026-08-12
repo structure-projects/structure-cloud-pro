@@ -1,0 +1,50 @@
+{{- if .Values.structure-sso.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "iam.fullname" . }}-structure-sso
+  labels:
+    {{- include "iam.labels" . | nindent 4 }}
+    app.service: structure-sso
+spec:
+  replicas: {{ .Values.structure-sso.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "iam.selectorLabels" . | nindent 6 }}
+      app.service: structure-sso
+  template:
+    metadata:
+      labels:
+        {{- include "iam.selectorLabels" . | nindent 8 }}
+        app.service: structure-sso
+    spec:
+      serviceAccountName: {{ include "iam.serviceAccountName" . }}
+      containers:
+        - name: structure-sso
+          image: "{{ .Values.structure-sso.image.repository }}:{{ .Values.structure-sso.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.structure-sso.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.structure-sso.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.structure-sso.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "iam.fullname" . }}-structure-sso
+  labels:
+    {{- include "iam.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.structure-sso.service.type }}
+  ports:
+    - port: {{ .Values.structure-sso.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "iam.selectorLabels" . | nindent 4 }}
+    app.service: structure-sso
+{{- end }}
