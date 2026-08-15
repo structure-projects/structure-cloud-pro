@@ -296,6 +296,34 @@ docker volume prune -f
 - [ ] 启用防火墙/安全组
 - [ ] 配置日志轮转和备份
 
+## 🧑‍💻 开发环境与工具文档
+
+项目提供完整的开发环境配置、AI 工具与 LLM 部署文档：
+
+### 开发环境配置
+
+| 目录 | 说明 |
+|------|------|
+| [go/](go/readme.md) | Go 环境配置与版本管理 |
+| [node/](node/readme.md) | Node.js 环境（nvm 多版本 + nrm 镜像源） |
+| [sdk/](sdk/readme.md) | SDKMAN（JDK + Maven 管理） |
+| [python/](python/readme.md) | Python 环境（venv + conda） |
+
+### AI 编程与自动化
+
+| 目录 | 说明 |
+|------|------|
+| [agents/](agents/readme.md) | AI 编程 Agent 使用指南（Claude Code、Cursor、Codex、Qoder、Trae、CodeBuddy、OpenClaw、Hermes、OpenHands） |
+| [workflow/](workflow/readme.md) | 工作流平台（Dify、Coze、n8n） |
+| [llm/gpustack/](llm/gpustack/readme.md) | LLM 私有化部署（GPUStack + vLLM / llama.cpp） |
+
+### 开发规范
+
+| 目录 | 说明 |
+|------|------|
+| [rule/](rule/index.md) | 项目开发规范（结构、依赖、CRUD、组件集成等） |
+| [idea/](idea/研发团队开发指南.md) | 研发团队开发指南（前后端规范、分支管理） |
+
 ## 📚 更多资源
 
 - [项目导航](https://github.com/structure-projects) - 更多相关项目
