@@ -1,6 +1,6 @@
 # structure-pro
 
-云原生微服务架构脚手架，提供完整的容器化部署和管理方案。
+云原生微服务架构脚手架，提供从开发、构建、部署到运维的全流程解决方案。支持 Docker Compose、Docker Swarm、Kubernetes（Helm）、Nomad、Serverless、KubeSphere 等多种容器化编排，采用领域级目录结构统一管理 34 个微服务（xxx-service/xxx-ui），并配套开发环境、AI 编程 Agent 与 LLM 私有化部署等完整文档。
 
 ## 🚀 快速开始
 
