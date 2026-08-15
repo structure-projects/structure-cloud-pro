@@ -1,0 +1,68 @@
+# IAM 应用层全局配置
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# 网关配置
+gateway:
+  enabled: true
+  name: gateway
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/structured/structured-gateway
+    pullPolicy: Always
+    tag: "2.0.0"
+  service:
+    type: ClusterIP
+    port: 8080
+  replicaCount: 1
+  resources: {}
+
+# structure-sso 独立服务
+structure-sso:
+  enabled: true
+  name: structure-sso
+  image:
+    repository: registry.cn-hangzhou.aliyuncs.com/structured/structure-sso
+    pullPolicy: Always
+    tag: "2.0.0"
+  service:
+    type: ClusterIP
+    port: 8080
+  replicaCount: 1
+  resources: {}
+
+# 各 center 子 chart 配置覆盖
+structure-app-center: {}
+structure-audit-center: {}
+structure-auth-center: {}
+structure-billing-center: {}
+structure-data-middle-center: {}
+structure-file-center: {}
+structure-message-center: {}
+structure-org-center: {}
+structure-portal-center: {}
+structure-resource-center: {}
+structure-risk-center: {}
+structure-system-center: {}
+structure-tenant-center: {}
+structure-user-center: {}
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+ingress:
+  enabled: false
+  className: ""
+  hosts: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

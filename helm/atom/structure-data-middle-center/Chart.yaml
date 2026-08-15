@@ -1,0 +1,6 @@
+apiVersion: v2
+name: structure-data-middle-center
+description: Helm chart for structure-data-middle-center
+type: application
+version: 0.1.0
+appVersion: "2.0.0"

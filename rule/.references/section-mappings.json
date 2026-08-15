@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "description": "章节映射配置 - 支持A/C方案自动升级到B方案",
+  "basePath": "/Users/chuck/projects/structure-projects/structure-pro/rule",
+  "originalFile": "structure-projects-rule.md",
+  "mappings": {
+    "01-project-structure": {
+      "moduleFile": "01-project-structure.md",
+      "title": "项目结构规范",
+      "originalSection": {
+        "startLine": 1,
+        "endLine": 707,
+        "titlePattern": "## 项目结构规范|## 枚举规范|## 异常规范|## 响应规范|## 命名规范汇总"
+      },
+      "keywords": ["项目结构", "模块职责", "包结构", "架构"],
+      "fallbackTrigger": ["微服务架构", "多模块", "复杂依赖", "完整配置示例"]
+    },
+    "02-dependency-config": {
+      "moduleFile": "02-dependency-config.md",
+      "title": "依赖配置规范",
+      "originalSection": {
+        "startLine": 49,
+        "endLine": 706,
+        "titlePattern": "## 依赖组件配置|### .*依赖"
+      },
+      "keywords": ["依赖", "Maven", "pom.xml", "组件版本", "CVE修复"],
+      "fallbackTrigger": ["完整pom配置", "多组件组合", "详细版本信息"]
+    },
+    "03-crud-template": {
+      "moduleFile": "03-crud-template.md",
+      "title": "CRUD代码模板",
+      "originalSection": {
+        "startLine": 750,
+        "endLine": 1728,
+        "titlePattern": "## 命名规范汇总|### CRUD规范与示例|#### 控制器示例|#### 服务接口示例|#### 服务实现示例"
+      },
+      "keywords": ["CRUD", "Controller", "Service", "Manager", "Mapper", "Entity", "Assembler"],
+      "fallbackTrigger": ["批量删除", "下拉选", "树形结构", "复杂查询"]
+    },
+    "04-component-integration": {
+      "moduleFile": "04-component-integration.md",
+      "title": "组件集成指南",
+      "originalSection": {
+        "startLine": 3078,
+        "endLine": 4417,
+        "titlePattern": "### 更多组件集成示例|#### 日志组件|#### 安全组件|#### Redis|#### RabbitMQ|#### MinIO|#### 多租户|#### 数据权限"
+      },
+      "keywords": ["日志", "安全", "JWT", "OAuth", "Redis", "RabbitMQ", "MinIO", "租户", "数据权限"],
+      "fallbackTrigger": ["JWT认证", "OAuth配置", "分布式锁", "多组件联动", "完整配置类"]
+    },
+    "05-validation": {
+      "moduleFile": "05-validation.md",
+      "title": "参数验证规范",
+      "originalSection": {
+        "startLine": 1729,
+        "endLine": 2515,
+        "titlePattern": "#### 接口参数验证示例|##### .*验证|@NotNull|@NotBlank|自定义验证"
+      },
+      "keywords": ["验证", "validation", "@NotNull", "@NotBlank", "@Pattern", "@Valid", "分组", "级联"],
+      "fallbackTrigger": ["自定义验证器", "交叉字段验证", "条件验证", "复杂验证逻辑"]
+    },
+    "06-swagger": {
+      "moduleFile": "06-swagger.md",
+      "title": "Swagger文档规范",
+      "originalSection": {
+        "startLine": 2533,
+        "endLine": 3077,
+        "titlePattern": "#### Swagger 文档示例|##### .*注解|springdoc"
+      },
+      "keywords": ["Swagger", "OpenAPI", "springdoc", "@Tag", "@Operation", "@Schema", "API文档"],
+      "fallbackTrigger": ["安全Scheme", "JWT配置", "多分组", "复杂响应"]
+    }
+  },
+  "upgradeRules": {
+    "autoUpgrade": {
+      "enabled": true,
+      "triggers": [
+        {
+          "pattern": "详细|完整|具体",
+          "action": "loadOriginal"
+        },
+        {
+          "pattern": "参考.*规范",
+          "action": "loadOriginal"
+        },
+        {
+          "pattern": "完整配置|详细代码",
+          "action": "loadOriginal"
+        }
+      ]
+    },
+    "contextHints": {
+      "complexity": {
+        "low": ["01", "03", "05"],
+        "medium": ["02", "04", "06"],
+        "high": ["B方案"]
+      },
+      "taskType": {
+        "codeGeneration": ["01", "03", "05"],
+        "configuration": ["02", "04"],
+        "apiDesign": ["06"],
+        "security": ["04"],
+        "fullStack": ["B方案"]
+      }
+    }
+  },
+  "crossReferences": {
+    "dependencies": {
+      "02-dependency-config": ["01-project-structure", "04-component-integration"]
+    },
+    "codeTemplate": {
+      "03-crud-template": ["01-project-structure", "05-validation", "06-swagger"]
+    },
+    "components": {
+      "04-component-integration": ["02-dependency-config"]
+    }
+  }
+}

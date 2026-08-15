@@ -1,0 +1,49 @@
+apiVersion: v2
+name: iam
+description: IAM 身份认证与权限管理系统应用层 Helm Chart
+type: application
+version: 0.1.0
+appVersion: "2.0.0"
+dependencies:
+  - name: structure-app-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-app-center"
+  - name: structure-audit-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-audit-center"
+  - name: structure-auth-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-auth-center"
+  - name: structure-billing-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-billing-center"
+  - name: structure-data-middle-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-data-middle-center"
+  - name: structure-file-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-file-center"
+  - name: structure-message-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-message-center"
+  - name: structure-org-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-org-center"
+  - name: structure-portal-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-portal-center"
+  - name: structure-resource-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-resource-center"
+  - name: structure-risk-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-risk-center"
+  - name: structure-system-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-system-center"
+  - name: structure-tenant-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-tenant-center"
+  - name: structure-user-center
+    version: 0.1.0
+    repository: "file://../../atom/structure-user-center"
